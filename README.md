@@ -199,6 +199,9 @@ There are quite a few:
 
 ## Changelog
 
+## 2.5.1
+* Fix New Search widget (Elem. >= 3.24) use correct search url (thanks to [@giovanni-caprilli](https://github.com/giovanni-caprilli))
+
 ## 2.5.0
 * **NEW editor language switcher controls** for Elementor Editor Top Bar 3.25.0 and later (not v4).
 Now can switch between pages & templates translations from "Page Settings" and in setings panel, on "Languages" section.
