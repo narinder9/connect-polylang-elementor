@@ -199,6 +199,9 @@ There are quite a few:
 
 ## Changelog
 
+## 2.5.2
+* Fix SVG flags use base64 encode.
+
 ## 2.5.1
 * Fix New Search widget (Elem. >= 3.24) use correct search url (thanks to [@giovanni-caprilli](https://github.com/giovanni-caprilli))
 
