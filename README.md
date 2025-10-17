@@ -199,6 +199,9 @@ There are quite a few:
 
 ## Changelog
 
+## 2.5.3
+* Fix language visibility don't work with cache.
+
 ## 2.5.2
 * Fix SVG flags use base64 encode.
 
