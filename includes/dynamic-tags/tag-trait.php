@@ -38,11 +38,17 @@ trait TagTrait {
 		$value    = '';
 
 		$languages = pll_the_languages( array( 'raw' => 1 ) );
-
 		if ( is_array( $languages ) ) {
 			if ( 'current' === $language ) {
-				$value = $languages[ pll_current_language() ][ $field ];
-			} elseif ( isset( $languages[ $language ] ) ) {
+				$current_lang = pll_current_language();
+				// If no current language, fallback to default language
+				if ( ! $current_lang ) {
+					$current_lang = pll_default_language();
+				}
+				if ( $current_lang && isset( $languages[ $current_lang ] ) && isset( $languages[ $current_lang ][ $field ] ) ) {
+					$value = $languages[ $current_lang ][ $field ];
+				}
+			} elseif ( isset( $languages[ $language ] ) && isset( $languages[ $language ][ $field ] ) ) {
 				$value = $languages[ $language ][ $field ];
 			}
 		}

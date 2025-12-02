@@ -19,6 +19,7 @@
  * Domain Path:       /languages/
  * Requires WP:       5.4
  * Requires PHP:      5.6
+ * Requires Plugins:   polylang, elementor
  * Elementor tested up to: 3.33.2
  * Elementor Pro tested up to: 3.33.2
  *
@@ -77,7 +78,6 @@ spl_autoload_register(
 // Initialize plugin.
 add_action( 'plugins_loaded', 'ConnectPolylangElementor\\setup', 20 );
 add_action( 'init', 'ConnectPolylangElementor\\load_textdomain' );
-
 // Fixes CROSS Domain issues (add before Elementor & Polylang start).
 add_filter( 'plugins_url', 'ConnectPolylangElementor\\fix_cross_domain_assets' );
 add_filter( 'pll_context', 'ConnectPolylangElementor\\fix_elementor_editor_context' );
@@ -152,12 +152,13 @@ function fix_cross_domain_assets( $url ) {
 	// Is a multidomain configuration.
 	if ( isset( $pll_options['force_lang'] ) && 3 === $pll_options['force_lang'] && ! empty( $pll_options['domains'] ) ) {
 
-		$srv_host = wp_parse_url( "//{$_SERVER['HTTP_HOST']}", PHP_URL_HOST );
+		$srv_host = wp_parse_url( "//" . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] )), PHP_URL_HOST );
 		$url_host = wp_parse_url( $url, PHP_URL_HOST );
 
 		if ( $url_host ) {
 			foreach ( $pll_options['domains'] as $domain ) {
-				if ( false !== strpos( $domain, $srv_host ) ) {
+				$domain_host = wp_parse_url( $domain, PHP_URL_HOST );
+				if ( $domain_host === $srv_host ) {
 					$url = str_replace( $url_host, $srv_host, $url );
 					break;
 				}
@@ -180,7 +181,7 @@ function fix_cross_domain_assets( $url ) {
  */
 function fix_elementor_editor_context( $class ) {
 
-	return 'PLL_Frontend' === $class && is_admin() && isset( $_GET['action'] ) && 'elementor' === $_GET['action'] ? 'PLL_Admin' : $class;
+	return 'PLL_Frontend' === $class && is_admin() && isset( $_GET['action'] ) && 'elementor' === sanitize_key( wp_unslash( $_GET['action'] ) ) ? 'PLL_Admin' : $class;
 
 }
 

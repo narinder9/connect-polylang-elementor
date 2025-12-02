@@ -730,7 +730,7 @@ class PolylangLanguageSwitcher extends Widget_Base {
 
 		// Max number of items in language dropdown
 		if ( 'dropdown' === $settings['layout'] ) {
-			$this->add_render_attribute( '_wrapper', 'style', '--langs:' . ( count( $languages ) - 1 ) );
+			$this->add_render_attribute( '_wrapper', 'style', '--langs:' . ( absint( count( $languages ) - 1 ) ) );
 		}
 
 		if ( ! empty( $languages ) ) {

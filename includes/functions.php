@@ -92,7 +92,10 @@ function cpel_is_polylang_multidomain() {
  */
 function cpel_is_elementor_editor() {
 
-	return is_admin() && isset( $_GET['action'], $_GET['post'] ) && 'elementor' === $_GET['action'];
+	return is_admin()
+		&& isset( $_GET['action'], $_GET['post'] )
+		&& 'elementor' === sanitize_key( wp_unslash( $_GET['action'] ) )
+		&& absint( $_GET['post'] ) > 0;
 
 }
 
