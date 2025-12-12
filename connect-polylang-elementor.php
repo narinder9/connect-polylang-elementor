@@ -19,7 +19,7 @@
  * Domain Path:       /languages/
  * Requires WP:       5.4
  * Requires PHP:      5.6
- * Requires Plugins:   polylang, elementor
+ * Requires Plugins:  polylang, elementor
  * Elementor tested up to: 3.33.2
  * Elementor Pro tested up to: 3.33.2
  *

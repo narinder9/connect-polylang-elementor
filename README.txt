@@ -1,9 +1,9 @@
 === Connect Polylang for Elementor ===
-Contributors: creapuntome, pacotole, daveshine, p4fbradjohnson
+Contributors: creapuntome, pacotole, daveshine, narinder-singh, p4fbradjohnson
 Donate link: https://github.com/sponsors/creame
 Tags: elementor, polylang, multilingual, language switcher, dynamic tags
 Requires at least: 5.4
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 5.6
 Stable tag: 2.5.4
 License: GPL-2.0-or-later
@@ -61,7 +61,7 @@ From Elementor Finder you can access to Polylang settings pages and go the site 
 * Other integration fixes.
 
 
-[AI-powered translation for Polylang](https://coolplugins.net/product/autopoly-ai-translation-for-polylang/?ref=creame&utm_source=cpel_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=bottom_link) — AutoPoly instantly translates your Elementor, Gutenberg, and ACF content in one click while keeping your design exactly the same. [Check it now (affiliated link)](https://coolplugins.net/product/autopoly-ai-translation-for-polylang/?ref=creame&utm_source=cpel_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=bottom_link) 
+[AI-powered translation for Polylang](https://coolplugins.net/product/autopoly-ai-translation-for-polylang/?ref=creame&utm_source=cpel_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=bottom_link) — AutoPoly instantly translates your Elementor, Gutenberg, and ACF content in one click while keeping your design exactly the same. [Check it now (affiliated link)](https://coolplugins.net/product/autopoly-ai-translation-for-polylang/?ref=creame&utm_source=cpel_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=bottom_link)
 
 
 ### How to use
@@ -192,8 +192,8 @@ There are quite a few:
 * [**Elementor Datepicker Localization**](https://github.com/creame/elementor-datepicker-localization) - Allow form datetime fields in your site language
 
 
-=  How can I translate Polylang pages automatically? = 
-Use [AutoPoly ](https://coolplugins.net/product/autopoly-ai-translation-for-polylang/?ref=creame&utm_source=cpel_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=bottom_link) to auto-translate your Elementor and Gutenberg pages with AI in one click. [Check it now (affiliated link)](https://coolplugins.net/product/autopoly-ai-translation-for-polylang/?ref=creame&utm_source=cpel_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=bottom_link) 
+= How can I translate Polylang pages automatically? =
+Use [AutoPoly ](https://coolplugins.net/product/autopoly-ai-translation-for-polylang/?ref=creame&utm_source=cpel_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=bottom_link) to auto-translate your Elementor and Gutenberg pages with AI in one click. [Check it now (affiliated link)](https://coolplugins.net/product/autopoly-ai-translation-for-polylang/?ref=creame&utm_source=cpel_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=bottom_link)
 
 = Where do I report security bugs found in this plugin? =
 Please report security bugs found in the source code of the undefined plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/ad44f834-19c4-470b-860f-d19657e7902a). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
@@ -207,10 +207,10 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 = 2.5.4 =
 * Added: Registered with Patchstack Vulnerability Disclosure Program
-* Added: New screenshots 
+* Added: New screenshots
 * Tweaks: Added affiliated links.
 * Tweaks: Minor text improvements.
-* Compatibility: Tested with Elementor v3.33.2 and Polylang v3.7.5.
+* Compatibility: Tested with WordPress 6.9, Elementor v3.33.2 and Polylang v3.7.5.
 * Tweaks: Updated readme video and made small textual adjustments.
 * Removed: Old screenshots and outdated links
 
