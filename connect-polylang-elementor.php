@@ -78,6 +78,7 @@ spl_autoload_register(
 // Initialize plugin.
 add_action( 'plugins_loaded', 'ConnectPolylangElementor\\setup', 20 );
 add_action( 'init', 'ConnectPolylangElementor\\load_textdomain' );
+
 // Fixes CROSS Domain issues (add before Elementor & Polylang start).
 add_filter( 'plugins_url', 'ConnectPolylangElementor\\fix_cross_domain_assets' );
 add_filter( 'pll_context', 'ConnectPolylangElementor\\fix_elementor_editor_context' );
@@ -152,7 +153,7 @@ function fix_cross_domain_assets( $url ) {
 	// Is a multidomain configuration.
 	if ( isset( $pll_options['force_lang'] ) && 3 === $pll_options['force_lang'] && ! empty( $pll_options['domains'] ) ) {
 
-		$srv_host = wp_parse_url( "//" . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] )), PHP_URL_HOST );
+		$srv_host = wp_parse_url( '//' . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ), PHP_URL_HOST );
 		$url_host = wp_parse_url( $url, PHP_URL_HOST );
 
 		if ( $url_host ) {

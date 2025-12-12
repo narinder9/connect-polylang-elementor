@@ -105,8 +105,6 @@ class AdminExtras {
 
 	}
 
-
-
 	/**
 	 * Replace "Elementor" post state with icon
 	 *
