@@ -229,14 +229,19 @@ class ConnectPlugins {
 			return $false;
 		}
 
-		// Translate post_id.
-		$attr['id'] = pll_get_post( absint( $attr['id'] ) ) ?: $attr['id']; //phpcs:ignore WordPress.PHP.DisallowShortTernary
+		// Translate post_id safely.
+		if ( isset( $attr['id'] ) && '' !== $attr['id'] ) {
+			$id = absint( $attr['id'] );
+			if ( $id ) {
+				$attr['id'] = pll_get_post( $id ) ?: $id; //phpcs:ignore WordPress.PHP.DisallowShortTernary
+			}
+		}
 		// Skip next call.
 		$attr['skip'] = 1;
 
 		$output = '';
 		foreach ( $attr as $key => $val ) {
-			$output .= " $key=\"$val\"";
+			$output .= ' ' . esc_attr( sanitize_key( $key ) ) . '="' . esc_attr( $val ) . '"';
 		}
 
 		return do_shortcode( '[elementor-template' . $output . ']' );
@@ -298,18 +303,18 @@ class ConnectPlugins {
 	public function elementor_kit_translation( $value ) {
 
 		$translation = null;
-
 		// Is API REST '/wp-json/elementor/v1/globals'.
 		if ( defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $_SERVER['HTTP_REFERER'] ) ) {
 			// Referrer is Elementor Editor?
-			wp_parse_str( wp_parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_QUERY ), $query );
+			$referer = esc_url_raw( $_SERVER['HTTP_REFERER'] );
+			wp_parse_str( wp_parse_url( $referer, PHP_URL_QUERY ), $query );
 
 			if ( isset( $query['action'], $query['post'] ) && 'elementor' === $query['action'] ) {
-				$translation = pll_get_post( $value, pll_get_post_language( intval( $query['post'] ) ) );
+				$translation = pll_get_post( $value, pll_get_post_language( absint( $query['post'] ) ) );
 			}
 		} elseif ( cpel_is_elementor_editor() ) {
-
-			$translation = pll_get_post( $value, pll_get_post_language( intval( $_GET['post'] ) ) );
+			$post_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0;
+			$translation = $post_id ? pll_get_post( $value, pll_get_post_language( $post_id ) ) : null;
 
 		} elseif ( ! is_admin() ) {
 
@@ -500,7 +505,9 @@ class ConnectPlugins {
 		global $pagenow;
 
 		return '_elementor_css' === $meta_key && 'post-new.php' === $pagenow
-			&& isset( $_GET['from_post'], $_GET['new_lang'] ) ? false : $null;
+			&& isset( $_GET['from_post'], $_GET['new_lang'] ) 
+			&& ! empty( absint( wp_unslash( $_GET['from_post'] ) ) ) 
+    		&& ! empty( sanitize_key( wp_unslash( $_GET['new_lang'] ) ) ) ? false : $null;
 
 	}
 
@@ -808,8 +815,7 @@ class ConnectPlugins {
 	 */
 	private function fix_url_domain( $url, $post_id ) {
 
-		$current_host = wp_parse_url( pll_current_language( 'home_url' ) ?: trailingslashit( "//{$_SERVER['HTTP_HOST']}" ), PHP_URL_HOST ); //phpcs:ignore WordPress.PHP.DisallowShortTernary
-		$post_host    = wp_parse_url( pll_get_post_language( $post_id, 'home_url' ), PHP_URL_HOST );
+		$current_host = wp_parse_url( pll_current_language( 'home_url' ) ?: trailingslashit( "//" . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) ), PHP_URL_HOST ); //phpcs:ignore WordPress.PHP.DisallowShortTernary
 
 		if ( $current_host !== $post_host ) {
 			$url = str_replace( $current_host, $post_host, $url );
