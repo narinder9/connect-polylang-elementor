@@ -97,8 +97,8 @@ class ConnectPlugins {
 			// Deprecated way to handle language switcher controls.
 			// Elementor editor menu links to translations.
 			add_action( 'elementor/editor/after_enqueue_scripts', array( $this, 'elementor_editor_script' ) );
-			add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'elementor_editor_style' ) );
 		}
+		add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'elementor_editor_style' ) );
 
 		// Elementor Site Editor template tweaks.
 		add_filter( 'elementor-pro/site-editor/data/template', array( $this, 'elementor_site_editor_template' ) );
@@ -736,6 +736,43 @@ class ConnectPlugins {
 			return;
 		}
 
+		// New language switcher styles for Elementor 3.25.0+.
+		if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.25.0', '>' ) ) {
+
+			$style = '
+.elementor-control-cpel-languages a {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	padding: 8px 5px;
+	border: none;
+	color: inherit;
+	line-height: 1.25em;
+	font-weight: 400;
+	text-decoration: none;
+	transition: none;
+}
+
+.elementor-control-cpel-languages a.current, .elementor-control-cpel-languages a:hover {
+	background-color: var(--e-a-bg-hover);
+	color: inherit;
+}
+
+.elementor-control-cpel-languages i {
+	font-size: 16px;
+}
+
+.elementor-control-cpel-languages .flag {
+	margin-left: auto;
+	font-size: 16px;
+}';
+
+			wp_add_inline_style( 'elementor-editor', $style );
+
+			return;
+		}
+
+		// Old language switcher styles for Elementor < 3.25.0
 		$style = '' .
 			".elementor-panel .elementor-panel-menu-item.elementor-panel-menu-item-cpel-current {\n" .
 			"	background: #eceeef;\n" .
@@ -869,19 +906,19 @@ class ConnectPlugins {
 		global $typenow, $post;
 
 		// Exit if is not translatable.
-		if ( ! pll_is_translated_post_type( $typenow ) ) {
+		if ( ! \pll_is_translated_post_type( $typenow ) ) {
 			return;
 		}
 
 		// Get the current post ID being edited in Elementor.
 		$post_id = $post->ID;
 
-		// Retrieve available languages from Polylang
-		$languages    = pll_languages_list( array( 'fields' => '' ) );
-		$translations = pll_get_post_translations( $post_id );
-		$use_emojis   = apply_filters( 'cpel/filter/use_emojis', true );
+		// Retrieve available languages from Polylang.
+		$languages    = \pll_languages_list( array( 'fields' => '' ) );
+		$translations = \pll_get_post_translations( $post_id );
+		$raw_html     = '';
 
-		// Start adding a new section in Elementor settings panel
+		// Start adding a new section in Elementor settings panel.
 		$document->start_controls_section(
 			'cpel_language_section',
 			array(
@@ -890,78 +927,71 @@ class ConnectPlugins {
 			)
 		);
 
-		// Loop through each available language
+		// Loop through each available language.
 		foreach ( $languages as $language ) {
-			// Check if a translation exists for the current language
+			$lang_parts = array(
+				'class' => 'cpel-language',
+				'flag'  => str_replace( '<img ', '<img class="flag" ', $language->flag ),
+				'href'  => '',
+			);
+
+			// Check if a translation exists for the current language.
 			if ( isset( $translations[ $language->slug ] ) ) {
-				// Get the post ID of the translated post
+				// Get the post ID of the translated post.
 				$translation_id = $translations[ $language->slug ];
 
-				// Get the standard WordPress edit link for the translated post
-				$edit_link = get_edit_post_link( $translation_id, 'edit' );
-
-				// Modify the edit link to open in Elementor editor if it's built with Elementor
-				if ( get_post_meta( $translation_id, '_elementor_edit_mode', true ) ) {
-					$edit_link = add_query_arg( 'action', 'elementor', $edit_link );
-				}
+				$lang_parts['icon'] = '<i class="eicon-document-file"></i>';
+				$lang_parts['text'] = '<span class="text">' . esc_html( \get_the_title( $translation_id ) ) . '</span>';
 
 				if ( $translation_id === $post_id ) {
-					$raw_html = sprintf(
-						'<strong><i class="eicon-document-file"></i> %s — %s</strong>',
-						get_the_title( $translation_id ),
-						$use_emojis ? cpel_flag_emoji( $language->flag_code ) : esc_html( $language->name )
-					);
+					$lang_parts['class'] .= ' current';
 				} else {
-					$raw_html = sprintf(
-						'<a href="%s" target="_blank"><i class="eicon-document-file"></i> %s — %s</a>',
-						esc_url( $edit_link ),
-						get_the_title( $translation_id ),
-						$use_emojis ? cpel_flag_emoji( $language->flag_code ) : esc_html( $language->name )
-					);
+					// Get edit link for the translated post.
+					$edit_link = \get_edit_post_link( $translation_id, 'edit' );
+
+					// Modify edit link if it's built with Elementor.
+					if ( \get_post_meta( $translation_id, '_elementor_edit_mode', true ) ) {
+						$edit_link = \add_query_arg( 'action', 'elementor', $edit_link );
+					}
+
+					$lang_parts['href'] = $edit_link;
 				}
-
-				// Add a control in Elementor panel with a clickable edit link for the translation
-				$document->add_control(
-					"cpel_lang_{$language->slug}",
-					array(
-						'type'            => \Elementor\Controls_Manager::RAW_HTML,
-						'raw'             => $raw_html,
-						'content_classes' => 'elementor-control-field',
-					)
-				);
 			} else {
-				// If no translation exists, generate a link to create a new translation
-				$args = array(
-					'post_type' => get_post_type( $post_id ), // Preserve original post type
-					'from_post' => $post_id, // Reference the current post ID
-					'new_lang'  => $language->slug, // Specify the target language slug
-					'_wpnonce'  => wp_create_nonce( 'new-post-translation' ), // Security nonce
+				// Generate the create translation link.
+				$args        = array(
+					'post_type' => \get_post_type( $post_id ),
+					'from_post' => $post_id,
+					'new_lang'  => $language->slug,
+					'_wpnonce'  => \wp_create_nonce( 'new-post-translation' ),
 				);
+				$create_link = \add_query_arg( $args, \admin_url( 'post-new.php' ) );
 
-				// Generate the create translation link
-				$create_link = add_query_arg( $args, admin_url( 'post-new.php' ) );
-
-				// Add a button to create a new translation
-				$document->add_control(
-					"cpel_add_lang_{$language->slug}",
-					array(
-						'type'            => \Elementor\Controls_Manager::RAW_HTML,
-						'raw'             => sprintf(
-							'<a href="%s" target="_blank"><i class="eicon-plus"></i> %s</a>',
-							esc_url( $create_link ),
-							$use_emojis
-								? sprintf( __( 'Add a translation — %s', 'connect-polylang-elementor' ), cpel_flag_emoji( $language->flag_code ) ) // phpcs:ignore WordPress.WP.I18n
-								: sprintf( __( 'Add a translation in %s', 'connect-polylang-elementor' ), esc_html( $language->name ) ) // phpcs:ignore WordPress.WP.I18n
-						),
-						'content_classes' => 'elementor-descriptor',
-					)
-				);
+				$lang_parts['class'] .= ' add-new';
+				$lang_parts['icon']   = '<i class="eicon-plus"></i>';
+				$lang_parts['href']   = $create_link;
+				$lang_parts['text']   = '<span class="text">' . sprintf( \esc_html__( 'Add a translation in %s', 'polylang' ), \strtolower( \esc_html( $language->name ) ) ) . '</span>';
 			}
+
+			$raw_html .= sprintf(
+				'<li><a class="%s" %s>%s %s %s</a></li>',
+				$lang_parts['class'],
+				$lang_parts['href'] ? sprintf( 'href="%s" target="_blank"', \esc_url( $lang_parts['href'] ) ) : '',
+				$lang_parts['icon'],
+				$lang_parts['text'],
+				$lang_parts['flag']
+			);
 		}
 
-		// End the controls section
+		$document->add_control(
+			'cpel_languages',
+			array(
+				'type'            => \Elementor\Controls_Manager::RAW_HTML,
+				'raw'             => '<ul>' . $raw_html . '</ul>',
+				'content_classes' => 'elementor-control-cpel-languages',
+			)
+		);
+
+		// End the controls section.
 		$document->end_controls_section();
 	}
-
-
 }
