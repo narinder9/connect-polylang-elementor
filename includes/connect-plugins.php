@@ -906,7 +906,7 @@ class ConnectPlugins {
 		global $typenow, $post;
 
 		// Exit if is not translatable.
-		if ( ! \pll_is_translated_post_type( $typenow ) ) {
+		if ( ! pll_is_translated_post_type( $typenow ) ) {
 			return;
 		}
 
@@ -914,15 +914,15 @@ class ConnectPlugins {
 		$post_id = $post->ID;
 
 		// Retrieve available languages from Polylang.
-		$languages    = \pll_languages_list( array( 'fields' => '' ) );
-		$translations = \pll_get_post_translations( $post_id );
+		$languages    = pll_languages_list( array( 'fields' => '' ) );
+		$translations = pll_get_post_translations( $post_id );
 		$raw_html     = '';
 
 		// Start adding a new section in Elementor settings panel.
 		$document->start_controls_section(
 			'cpel_language_section',
 			array(
-				'label' => esc_html__( 'Languages', 'polylang' ),
+				'label' => esc_html__( 'Languages', 'polylang' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 				'tab'   => \Elementor\Controls_Manager::TAB_SETTINGS,
 			)
 		);
@@ -931,8 +931,10 @@ class ConnectPlugins {
 		foreach ( $languages as $language ) {
 			$lang_parts = array(
 				'class' => 'cpel-language',
-				'flag'  => str_replace( '<img ', '<img class="flag" ', $language->flag ),
 				'href'  => '',
+				'icon'  => '',
+				'text'  => '',
+				'flag'  => str_replace( '<img ', '<img class="flag" ', $language->flag ),
 			);
 
 			// Check if a translation exists for the current language.
@@ -941,17 +943,17 @@ class ConnectPlugins {
 				$translation_id = $translations[ $language->slug ];
 
 				$lang_parts['icon'] = '<i class="eicon-document-file"></i>';
-				$lang_parts['text'] = '<span class="text">' . esc_html( \get_the_title( $translation_id ) ) . '</span>';
+				$lang_parts['text'] = '<span class="text">' . esc_html( get_the_title( $translation_id ) ) . '</span>';
 
 				if ( $translation_id === $post_id ) {
 					$lang_parts['class'] .= ' current';
 				} else {
 					// Get edit link for the translated post.
-					$edit_link = \get_edit_post_link( $translation_id, 'edit' );
+					$edit_link = get_edit_post_link( $translation_id, 'edit' );
 
 					// Modify edit link if it's built with Elementor.
-					if ( \get_post_meta( $translation_id, '_elementor_edit_mode', true ) ) {
-						$edit_link = \add_query_arg( 'action', 'elementor', $edit_link );
+					if ( get_post_meta( $translation_id, '_elementor_edit_mode', true ) ) {
+						$edit_link = add_query_arg( 'action', 'elementor', $edit_link );
 					}
 
 					$lang_parts['href'] = $edit_link;
@@ -959,23 +961,23 @@ class ConnectPlugins {
 			} else {
 				// Generate the create translation link.
 				$args        = array(
-					'post_type' => \get_post_type( $post_id ),
+					'post_type' => get_post_type( $post_id ),
 					'from_post' => $post_id,
 					'new_lang'  => $language->slug,
-					'_wpnonce'  => \wp_create_nonce( 'new-post-translation' ),
+					'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 				);
-				$create_link = \add_query_arg( $args, \admin_url( 'post-new.php' ) );
+				$create_link = add_query_arg( $args, admin_url( 'post-new.php' ) );
 
 				$lang_parts['class'] .= ' add-new';
 				$lang_parts['icon']   = '<i class="eicon-plus"></i>';
 				$lang_parts['href']   = $create_link;
-				$lang_parts['text']   = '<span class="text">' . sprintf( \esc_html__( 'Add a translation in %s', 'polylang' ), \strtolower( \esc_html( $language->name ) ) ) . '</span>';
+				$lang_parts['text']   = '<span class="text">' . sprintf( esc_html__( 'Add a translation in %s', 'polylang' ), strtolower( esc_html( $language->name ) ) ) . '</span>';  // phpcs:ignore WordPress.WP.I18n
 			}
 
 			$raw_html .= sprintf(
 				'<li><a class="%s" %s>%s %s %s</a></li>',
 				$lang_parts['class'],
-				$lang_parts['href'] ? sprintf( 'href="%s" target="_blank"', \esc_url( $lang_parts['href'] ) ) : '',
+				$lang_parts['href'] ? sprintf( 'href="%s" target="_blank"', esc_url( $lang_parts['href'] ) ) : '',
 				$lang_parts['icon'],
 				$lang_parts['text'],
 				$lang_parts['flag']

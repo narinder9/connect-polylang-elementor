@@ -77,7 +77,6 @@ spl_autoload_register(
 
 // Initialize plugin.
 add_action( 'plugins_loaded', 'ConnectPolylangElementor\\setup', 20 );
-add_action( 'init', 'ConnectPolylangElementor\\load_textdomain' );
 
 // Fixes CROSS Domain issues (add before Elementor & Polylang start).
 add_filter( 'plugins_url', 'ConnectPolylangElementor\\fix_cross_domain_assets' );
@@ -111,19 +110,6 @@ function setup() {
 		AdminExtras::instance();
 
 	}
-}
-
-/**
- * Load textdomain.
- *
- * @since 2.0.0
- *
- * @return void
- */
-function load_textdomain() {
-
-	load_plugin_textdomain( 'connect-polylang-elementor', false, dirname( CPEL_BASENAME ) . '/languages' );
-
 }
 
 /**

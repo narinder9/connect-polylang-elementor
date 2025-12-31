@@ -21,7 +21,7 @@ trait TagTrait {
 		$this->add_control(
 			'language',
 			array(
-				'label'   => __( 'Language', 'polylang' ),
+				'label'   => __( 'Language', 'polylang' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 				'type'    => Controls_Manager::SELECT,
 				'options' => $options,
 				'default' => 'current',
