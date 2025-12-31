@@ -5,7 +5,7 @@ Tags: elementor, polylang, multilingual, language switcher, dynamic tags
 Requires at least: 5.4
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 2.5.4
+Stable tag: 2.5.5
 License: GPL-2.0-or-later
 License URI: https://opensource.org/licenses/GPL-2.0
 
@@ -204,6 +204,11 @@ Please report security bugs found in the source code of the undefined plugin thr
 3. Preview how the Polylang–Elementor language switcher looks on the frontend.
 
 == Changelog ==
+
+= 2.5.5 =
+* Tweaks: Enhanced editor language switcher control
+* Tweaks: Remove load_plugin_textdomain
+* Compatibility: Tested with Elementor 3.34.0
 
 = 2.5.4 =
 * Added: Registered with Patchstack Vulnerability Disclosure Program
