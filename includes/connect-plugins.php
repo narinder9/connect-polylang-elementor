@@ -89,8 +89,8 @@ class ConnectPlugins {
 			}
 		}
 
-		// Check if Elementor is installed and its version is greater than 3.25.0
-		if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.25.0', '>' ) ) {
+		// Check if Elementor is installed and its version is greater than 3.25.0.
+		if ( cpel_elementor_min_version( '3.25.0' ) ) {
 			// Elementor 3.25.0 introduced a new way to handle language switcher controls.
 			add_action( 'elementor/documents/register_controls', array( $this, 'register_language_switcher_controls' ) );
 		} else {
@@ -737,7 +737,7 @@ class ConnectPlugins {
 		}
 
 		// New language switcher styles for Elementor 3.25.0+.
-		if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.25.0', '>' ) ) {
+		if ( cpel_elementor_min_version( '3.25.0' ) ) {
 
 			$style = '
 .elementor-control-cpel-languages a {
