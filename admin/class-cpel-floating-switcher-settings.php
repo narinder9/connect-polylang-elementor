@@ -352,10 +352,7 @@ class CPEL_Floating_Lang_Switcher_Settings
                 wp_send_json_error([ 'message' => $activation_result->get_error_message() ]);
             }
         }
-        if(!get_option('cpel_autopoly_installed')) {
-            update_option('cpel_autopoly_installed', 'installed_by_cpel');
-        }
-        
+        update_option('cpel_autopoly_installed', 'cpel');
         wp_send_json_success(
             [
             'message' => __('AutoPoly plugin installed and activated successfully!', 'connect-polylang-elementor')
