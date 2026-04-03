@@ -3,7 +3,7 @@ Contributors: creapuntome, pacotole, daveshine, narinder-singh, p4fbradjohnson
 Donate link: https://github.com/sponsors/creame
 Tags: elementor, polylang, multilingual, language switcher, dynamic tags
 Requires at least: 5.4
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 5.6
 Stable tag: 2.6.0
 License: GPL-2.0-or-later
@@ -215,9 +215,9 @@ Please report security bugs found in the source code of the undefined plugin thr
 * **Added:** AutoPoly promotional admin notice.
 * **Improved:** Overall onboarding experience for first-time users.
 * **Improved:** Language switcher design and placement for better usability.
-* **Compatibility:** Elementor v4.0.1 and Polylang v3.8
 * **Improved:** Minor code Improvements.
-
+* **Compatibility:** Elementor v4.0.1 and Polylang v3.8
+* **Tested upto:** WordPress V7.0
 = 2.5.5 =
 * Tweaks: Enhanced editor language switcher control
 * Tweaks: Remove load_plugin_textdomain
